@@ -1,20 +1,18 @@
-from typing import List, Optional
 
+from typing import List, Optional
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic.main import BaseModel
 from sqlalchemy.orm import Session
-
 import crud, models, schemas
 from database import SessionLocal, engine
 from security import JwtUltil
 from utils.Route import Route
 
 models.Base.metadata.create_all(bind=engine)
-
 app = FastAPI()
-
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
 
 fake_users_db = {
     "johndoe": {
@@ -64,30 +62,16 @@ def fake_decode_token(token):
     )
 
 
-# @app.post(Route.V1.prefix_api + "/" + Route.V1.TOKEN)
-# async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-#
-#     user_db = crud.get_user_by_email(db, email=form_data.username)
-#     if not user_db:
-#         raise HTTPException(status_code=400, detail="Incorrect username or password")
-#     # user = UserInDB(**user_db)
-#     # hashed_password = fake_hash_password(form_data.password)
-#     # hashed_password = form_data.password
-#     if not user_db.data == form_data.password:
-#         raise HTTPException(status_code=400, detail="Incorrect username or password")
-#
-#     return {"access_token": 'Bearer ' + JwtUltil.generate_jwt(user.username), "token_type": "bearer"}
-@app.post("/token")
-async def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    user_dict = fake_users_db.get(form_data.username)
+@app.post(Route.V1.prefix_api + "/" + Route.V1.TOKEN)
+async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    user_dict = crud.get_user_by_email(db, email=form_data.username)
     if not user_dict:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
-    user = UserInDB(**user_dict)
-    hashed_password = fake_hash_password(form_data.password)
-    if not hashed_password == user.hashed_password:
+    hashed_password = form_data.password
+    if not hashed_password == user_dict.hashed_password:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
 
-    return {"access_token": user.username, "token_type": "bearer"}
+    return {"access_token": 'Bearer ' + JwtUltil.generate_jwt(user_dict.email), "token_type": "bearer"}
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):

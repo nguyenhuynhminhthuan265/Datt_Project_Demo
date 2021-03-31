@@ -12,7 +12,7 @@ def token_response(token: str):
     }
 
 
-def generate_jwt(email: str) -> Dict[str, str]:
+def generate_jwt(email: str):
     payload = {
         "email": email,
         "expires": time.time() + 600
