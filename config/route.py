@@ -4,4 +4,5 @@ class Route:
         VERSION = 'v1'
         prefix_api = '/' + API + '/' + VERSION
 
-        TOKEN = 'token'
+        TOKEN = '/token'
+        LOGIN = '/login'

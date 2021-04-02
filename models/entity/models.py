@@ -24,3 +24,12 @@ class Item(Base):
     owner_id = Column(Integer, ForeignKey("users.id"))
 
     owner = relationship("User", back_populates="items")
+
+
+class MessageEntity(Base):
+    __tablename__ = "messages"
+
+    id = Column(Integer, primary_key=True, index=True)
+    message = Column(String, index=True)
+    id_user_sender = Column(Integer, index=True)
+    id_user_receiver = Column(Integer, index=True)

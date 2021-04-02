@@ -4,25 +4,23 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 import crud
-import schemas
 from connection.db_connection import get_db
-from security.jwt_util import oauth2_scheme, authenticate_user, create_access_token, get_current_active_user, \
-    User, ACCESS_TOKEN_EXPIRE_MINUTES
+from models.schemas import schemas
+from security.jwt_util import oauth2_scheme
 
 router = APIRouter()
 
 
-@router.get("/api/users/me")
-async def read_users_me(current_user: User = Depends(get_current_active_user)):
-    return current_user
+# @router.get("/users/me")
+# async def read_users_me(current_user: User = Depends(get_current_active_user)):
+#     return current_user
 
-
-@router.get("/api/items/")
-async def read_items(token: str = Depends(oauth2_scheme)):
+@router.get("/items/")
+def read_items(token: str = Depends(oauth2_scheme)):
     return {"token": token}
 
 
-@router.post("/api/users/", response_model=schemas.User)
+@router.post("/users/", response_model=schemas.User)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_email(db, email=user.email)
     if db_user:
@@ -30,21 +28,21 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     return crud.create_user(db=db, user=user)
 
 
-@router.get("/api/users/", response_model=List[schemas.User])
+@router.get("/users/", response_model=List[schemas.User])
 def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     users = crud.get_users(db, skip=skip, limit=limit)
     return users
 
 
-@router.get("/api/users/{user_id}", response_model=schemas.User)
+@router.get("/users/{user_id}", response_model=schemas.User)
 def read_user(user_id: int, db: Session = Depends(get_db)):
-    db_user = crud.get_user(db, user_id=user_id)
+    db_user = crud.get_user_by_id(db, user_id=user_id)
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return db_user
 
 
-@router.post("/api/users/{user_id}/items/", response_model=schemas.Item)
+@router.post("/users/{user_id}/items/", response_model=schemas.Item)
 def create_item_for_user(
         user_id: int, item: schemas.ItemCreate, db: Session = Depends(get_db)
 ):
