@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    
+</head>
+
+<body>
+
+    <div class="wrapper fadeInDown">
+        <div id="formContent">
+            <!-- Tabs Titles -->
+
+            <!-- Icon -->
+            <div class="fadeIn first">
+                <img src="https://i.pinimg.com/originals/e9/80/f7/e980f7be96698681e64bac92221cfb7d.png" id="icon" alt="User Icon" />
+            </div>
+
+            <!-- Login Form -->
+            <form>
+                <input type="text" id="login" class="fadeIn second" name="login" placeholder="login">
+                <input type="text" id="password" class="fadeIn third" name="login" placeholder="password">
+                <input type="button" class="fadeIn fourth" value="Log In" onclick="login()">
+            </form>
+
+            <!-- Remind Passowrd -->
+            <div id="formFooter">
+                <a class="underlineHover" href="#">Forgot Password?</a>
+            </div>
+
+        </div>
+    </div>
+    <script>
+        function login(){
+            window.location.replace("http://127.0.0.1:5500/chat.html");
+        }
+    </script>
+</body>
+
+</html>
